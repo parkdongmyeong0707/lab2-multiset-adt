@@ -8,16 +8,19 @@
 public class BST {
     // we use Integer here so that we can set the root to null. This is the same idea as
     // how the Python code uses None in the BST implementation.
-    private Integer root;
+    Integer root;
+
 
     private BST left;
     private BST right;
+
 
     public BST(int root) {
         this.root = root;
         this.left = new BST();
         this.right = new BST();
     }
+
 
     /**
      * Alternate constructor, so we don't have to explicitly pass in null.
@@ -28,9 +31,12 @@ public class BST {
     }
 
 
+
+
     public boolean isEmpty() {
-        return false; // TODO implement me!
+        return this.root == null;
     }
+
 
     public boolean contains(int item) {
         // provided as an example
@@ -43,38 +49,117 @@ public class BST {
         }
         return this.right.contains(item);
 
+
     }
+
+
 
 
     public void insert(int item) {
-
+        if (this.isEmpty()){
+            this.root = item;
+            this.left = null;
+            this.right = null;
+        }
+        else if (item <= this.root){
+            this.left.insert(item);
+        }
+        else{
+            this.right.insert(item);
+        }
     }
+
+
 
 
     public void delete(int item) {
-
+        if(this.root == item){
+            this.deleteRoot();
+        }
+        else if(item < this.root){
+            this.left.delete(item);
+        }
+        else{
+            this.right.delete(item);
+        }
     }
+
 
     private void deleteRoot() {
-
+        if(this.left.isEmpty() && this.right.isEmpty()){
+            this.root = null;
+            this.left = null;
+            this.right = null;
+        }
+        else if(this.left.isEmpty()){
+            this.root = this.right.root;
+            this.left = this.right.left;
+            this.right = this.right.right;
+        }
+        else if(this.right.isEmpty()){
+            this.root = this.left.root;
+            this.left = this.left.left;
+            this.right = this.left.right;
+        }
+        else{
+            this.root = this.left.extractMax();
+        }
     }
+
+
 
 
     private int extractMax() {
-        return -1;
+        if(this.right.isEmpty()){
+            int maxItem = this.root;
+            this.root = this.left.root;
+            this.left = this.left.left;
+            this.right = this.left.right;
+
+
+            return maxItem;
+        }
+        else{
+            return this.right.extractMax();
+        }
     }
+
 
     public int height() {
-        return -1;
+        if(this.isEmpty()){
+            return 0;
+        }
+        else{
+            return Math.max(this.left.height(), this.right.height());
+        }
     }
+
 
     public int count(int item) {
-        return -1;
+        if(this.isEmpty()){
+            return 0;
+        }
+        else if(this.root > item){
+            return this.left.count(item);
+        }
+        else if(this.root == item){
+            return 1 + this.left.count(item) + this.right.count(item);
+        }
+        else{
+            return this.right.count(item);
+        }
     }
 
+
     public int getSize() {
-        return -1;
+        if(this.isEmpty()){
+            return 0;
+        }
+        int leftSize = (this.left == null) ? 0 : this.left.getSize();
+        int rightSize = (this.right == null) ? 0 : this.right.getSize();
+        return 1 + leftSize + rightSize;
     }
+
 
     public static void main(String[] args) {
         // You can also add code here to do some basic testing if you want,
@@ -86,5 +171,6 @@ public class BST {
         bst.insert(a);
         System.out.println(bst.contains(a));
     }
+
 
 }
